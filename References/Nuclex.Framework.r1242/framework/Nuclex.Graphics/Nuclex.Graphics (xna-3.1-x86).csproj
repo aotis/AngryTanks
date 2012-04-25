@@ -261,6 +261,7 @@
     <EmbeddedResource Include="Resources\DebugDrawerResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>DebugDrawerResources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

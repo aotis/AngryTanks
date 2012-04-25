@@ -72,6 +72,14 @@
     <Reference Include="mscorlib">
       <Private>False</Private>
     </Reference>
+    <Reference Include="Nuclex.Game, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\References\Nuclex.Framework.r1242\framework\Nuclex.Game\bin\xna-3.1-x86\Debug\Nuclex.Game.dll</HintPath>
+    </Reference>
+    <Reference Include="Nuclex.UserInterface, Version=4.0.0.0, Culture=neutral, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\References\Nuclex.Framework.r1242\framework\Nuclex.UserInterface\EmbeddedContent\UnitTest\Nuclex.UserInterface.dll</HintPath>
+    </Reference>
     <Reference Include="System">
       <Private>False</Private>
     </Reference>
@@ -91,6 +99,8 @@
   <ItemGroup>
     <Compile Include="Box.cs" />
     <Compile Include="Camera.cs" />
+    <Compile Include="JoinMenu.cs" />
+    <Compile Include="MainMenu.cs" />
     <Compile Include="Player\PlayerManager.cs" />
     <Compile Include="Player\RemotePlayer.cs" />
     <Compile Include="Player\Player.cs" />

@@ -272,6 +272,7 @@
     <EmbeddedResource Include="Resources\UnitTestResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>UnitTestResources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

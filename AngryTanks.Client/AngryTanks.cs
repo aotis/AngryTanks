@@ -14,6 +14,7 @@ using Microsoft.Xna.Framework.Storage;
 
 using NDesk.Options;
 using Nuclex.Input;
+using Nuclex.Game.States;
 using log4net;
 
 using AngryTanks.Common.Protocol;
@@ -53,6 +54,10 @@ namespace AngryTanks.Client
         private bool fullscreen = false;
         private Viewport lastViewport;
 
+        GameServiceContainer gameService;
+        GameStateManager gameStateManager;
+
+
         public AngryTanks()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -75,17 +80,19 @@ namespace AngryTanks.Client
             // instantiate game console
             gameConsole = new GameConsole(this, new Vector2(0, 400), new Vector2(800, 200),
                                           new Vector2(10, 10), new Vector2(10, 10), new Color(255, 255, 255, 100));
-            Components.Add(gameConsole);
+            //Components.Add(gameConsole);
             gameConsole.UpdateOrder = 1000;
             gameConsole.DrawOrder = 1000;
 
             gameConsole.PromptReceivedInput += HandlePromptInput;
 
             // instantiate the world
+            /* disabling for testing
             world = new World(this, serverLink);
             Components.Add(world);
             world.UpdateOrder = 100;
             world.DrawOrder = 100;
+             */
         }
 
         /// <summary>
@@ -96,6 +103,10 @@ namespace AngryTanks.Client
         /// </summary>
         protected override void Initialize()
         {
+            gameService = new GameServiceContainer();
+            gameStateManager = new GameStateManager(gameService);
+            gameStateManager.Push(new MainMenu(gameStateManager, this));
+
             base.Initialize();
         }
 
@@ -147,6 +158,9 @@ namespace AngryTanks.Client
 
             lastViewport = viewport;
 
+            gameStateManager.Update(gameTime);
+            
+
             base.Update(gameTime);
         }
 
@@ -157,6 +171,8 @@ namespace AngryTanks.Client
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.Black);
+
+            gameStateManager.Draw(gameTime);
 
             base.Draw(gameTime);
         }
