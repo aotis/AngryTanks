@@ -115,6 +115,7 @@
     <Compile Include="Sprite.cs" />
     <Compile Include="StaticSprite.cs" />
     <Compile Include="Shot.cs" />
+    <Compile Include="TextBox.cs" />
     <Compile Include="World.cs" />
   </ItemGroup>
   <ItemGroup>

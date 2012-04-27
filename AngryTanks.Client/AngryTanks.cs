@@ -19,6 +19,8 @@ using log4net;
 
 using AngryTanks.Common.Protocol;
 
+using Nuclex.UserInterface;
+
 namespace AngryTanks.Client
 {
     /// <summary>
@@ -54,9 +56,15 @@ namespace AngryTanks.Client
         private bool fullscreen = false;
         private Viewport lastViewport;
 
-        GameServiceContainer gameService;
         GameStateManager gameStateManager;
+        private static GuiManager gui;
+        public static GuiManager Gui
+        {
+            get { return gui; }
+        }
 
+        GameServiceContainer gameServices;
+        Viewport viewport;
 
         public AngryTanks()
         {
@@ -72,19 +80,26 @@ namespace AngryTanks.Client
 
             // down with xna's input!
             Input = new InputManager(Services, Window.Handle);
+            Services.AddService(typeof(InputManager), Input);
             Components.Add(Input);
             Input.UpdateOrder = 100;
 
-            Input.GetKeyboard().KeyPressed += HandleKeyPress;
+            gameServices = new GameServiceContainer();
+            gui = new GuiManager(gameServices, graphics, Input);
+            Services.AddService(typeof(GuiManager), gui);
+            Components.Add(gui);
+
+            IsMouseVisible = true;
+            //Input.GetKeyboard().KeyPressed += HandleKeyPress;
 
             // instantiate game console
-            gameConsole = new GameConsole(this, new Vector2(0, 400), new Vector2(800, 200),
-                                          new Vector2(10, 10), new Vector2(10, 10), new Color(255, 255, 255, 100));
+            //gameConsole = new GameConsole(this, new Vector2(0, 400), new Vector2(800, 200),
+            //                              new Vector2(10, 10), new Vector2(10, 10), new Color(255, 255, 255, 100));
             //Components.Add(gameConsole);
-            gameConsole.UpdateOrder = 1000;
-            gameConsole.DrawOrder = 1000;
+            //gameConsole.UpdateOrder = 1000;
+            //gameConsole.DrawOrder = 1000;
 
-            gameConsole.PromptReceivedInput += HandlePromptInput;
+            //gameConsole.PromptReceivedInput += HandlePromptInput;
 
             // instantiate the world
             /* disabling for testing
@@ -103,9 +118,12 @@ namespace AngryTanks.Client
         /// </summary>
         protected override void Initialize()
         {
-            gameService = new GameServiceContainer();
-            gameStateManager = new GameStateManager(gameService);
-            gameStateManager.Push(new MainMenu(gameStateManager, this));
+            viewport = GraphicsDevice.Viewport;
+            Screen defaultScreen = new Screen(viewport.Width, viewport.Height);
+            gui.Screen = defaultScreen;
+
+            gameStateManager = new GameStateManager(new GameServiceContainer());
+            gameStateManager.Push(new MainMenu(this, gameStateManager, gui));
 
             base.Initialize();
         }
@@ -147,13 +165,13 @@ namespace AngryTanks.Client
             serverLink.Update(gameTime);
 
             // TODO should probably have console do more advanced positioning that accounts for this...
-            Viewport viewport = GraphicsDevice.Viewport;
+            
 
             // do we need to change console's position and size?
             if ((viewport.Width != lastViewport.Width) || (viewport.Height != lastViewport.Height))
             {
-                gameConsole.Position = new Vector2(0, viewport.Height - 200);
-                gameConsole.Size = new Vector2(viewport.Width, 200);
+                //gameConsole.Position = new Vector2(0, viewport.Height - 200);
+                //gameConsole.Size = new Vector2(viewport.Width, 200);
             }
 
             lastViewport = viewport;
@@ -341,5 +359,12 @@ namespace AngryTanks.Client
 
             world.LoadMap(new StreamReader("Content/maps/ducati_style_random.bzw"));
         }
+        public void QuickConnect()
+        {
+            Random rand = new Random();
+            Connect("localhost", null, String.Format("Random Callsign {0}", rand.Next(10000)), null, TeamType.RogueTeam);
+        }
+
+
     }
 }

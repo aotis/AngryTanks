@@ -74,7 +74,7 @@ namespace AngryTanks.Client
         public ConsoleMessageLine(params object[] list)
         {
             if (list.Length % 2 != 0)
-                throw new ArgumentException("you must pass a message and then a color");
+                throw new ArgumentException("You must pass a message and then a color");
 
             this.Parts = new LinkedList<ConsoleMessagePart>();
 

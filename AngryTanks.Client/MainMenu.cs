@@ -12,6 +12,7 @@ using Microsoft.Xna.Framework.Net;
 using Microsoft.Xna.Framework.Storage;
 
 using Nuclex.Game.States;
+using Nuclex.UserInterface;
 
 
 namespace AngryTanks.Client
@@ -25,7 +26,7 @@ namespace AngryTanks.Client
         private Texture2D bg, join, help, quit; // textures for buttons and background
         GameStateManager gameStateManager; // stores the gameStateManager used in AngryTanks
                                             // this allows switching to new gamestates from within a gamestate
-
+        GuiManager gui;
         private GraphicsDevice graphicsDevice; // needed for spriteBatch
         private SpriteBatch spriteBatch; // passing spriteBatch from AngryTanks didn't work
         private KeyboardState keyboardState, oldKeyboardState;
@@ -34,7 +35,9 @@ namespace AngryTanks.Client
         private int highlightedButton; // to be used as an index for the enum buttons
         private Color[] buttonColor; // using an array instead of List for direct access
 
-        public MainMenu(GameStateManager gameStateManager, Game game)
+        private Screen mainMenuScreen; // screen to be used by the guimanager for this object
+
+        public MainMenu(Game game, GameStateManager gameStateManager, GuiManager gui)
             : base(gameStateManager)
         {
             // load textures
@@ -47,6 +50,7 @@ namespace AngryTanks.Client
             // stays in constructor
             this.gameStateManager = gameStateManager;
             this.game = game;
+            this.gui = gui;
 
             // the following code can probably go in OnEntered() as well
             graphicsDevice = game.GraphicsDevice;
@@ -57,6 +61,11 @@ namespace AngryTanks.Client
             buttonColor[0] = Color.Yellow;
             buttonColor[1] = Color.White;
             buttonColor[2] = Color.White;
+
+            Viewport viewport = game.GraphicsDevice.Viewport;
+            mainMenuScreen = new Screen(viewport.Width, viewport.Height);
+
+            gui.Screen = mainMenuScreen;
         }
 
         /// <summary>
@@ -78,7 +87,7 @@ namespace AngryTanks.Client
             if (keyboardState.IsKeyUp(Keys.Enter) && oldKeyboardState.IsKeyDown(Keys.Enter))
             {
                 if (highlightedButton == (int)buttons.join)
-                    gameStateManager.Switch(new JoinMenu(gameStateManager, game));
+                    gameStateManager.Switch(new JoinMenu(game, gameStateManager, gui));
                 if (highlightedButton == (int)buttons.help)
                     // TODO: switch to help screen
                 // also exits the game
