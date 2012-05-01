@@ -32,6 +32,7 @@ namespace AngryTanks.Client
         GameStateManager gameStateManager;  // stores the gameStateManager used in AngryTanks
                                             // this allows switching to new gamestates from within a gamestate
         GuiManager gui;
+        InputManager input;
         GameServiceContainer gameService;
         Texture2D bg;
 
@@ -40,18 +41,19 @@ namespace AngryTanks.Client
         
         private Screen joinScreen;
         private LabelControl callsignLabel, tagLabel, hostLabel, teamLabel;
-        private ButtonControl joinButton;
+        private ButtonControl joinButton, backButton;
         private InputControl callsignInput, tagInput, hostInput;
         private ChoiceControl teamChoice;
 
 
-        public JoinMenu(Game game, GameStateManager gameStateManager, GuiManager gui)
+        public JoinMenu(Game game, GameStateManager gameStateManager, GuiManager gui, InputManager input)
             : base(gameStateManager)
         {
             this.game = game;
             this.gameStateManager = gameStateManager;
             this.gameService = new GameServiceContainer();
             this.gui = gui;
+            this.input = input;
 
             spriteBatch = new SpriteBatch(game.GraphicsDevice);
             bg = game.Content.Load<Texture2D>("textures/menu/ScoutTank");
@@ -60,8 +62,8 @@ namespace AngryTanks.Client
             joinScreen = new Screen(viewport.Width, viewport.Height);
             gui.Screen = joinScreen;
 
-            joinScreen.Desktop.Bounds = new UniRectangle(new UniScalar(0.1f, 0.0f), new UniScalar(0.1f, 0.0f),
-                                                        new UniScalar(.99f, 0.0f), new UniScalar(.99f, 0.0f));
+            joinScreen.Desktop.Bounds = new UniRectangle(new UniScalar(0.0f, 0.0f), new UniScalar(0.0f, 0.0f),
+                                                        new UniScalar(1.0f, 0.0f), new UniScalar(1.0f, 0.0f));
             InitializeComponents();
         }
         public override void Initialize()
@@ -79,7 +81,7 @@ namespace AngryTanks.Client
         {
             keyboardState = Keyboard.GetState();
             if (keyboardState.IsKeyUp(Keys.Escape) && oldKeyboardState.IsKeyDown(Keys.Escape))
-                gameStateManager.Switch(new MainMenu(game, gameStateManager, gui));
+                gameStateManager.Switch(new MainMenu(game, gameStateManager, gui, input));
 
            
 
@@ -127,25 +129,47 @@ namespace AngryTanks.Client
             this.hostInput = new InputControl();
 
             this.joinButton = new ButtonControl();
+            this.backButton = new ButtonControl();
             this.teamChoice = new ChoiceControl();
 
             this.callsignLabel.Text = "Callsign: ";
-            this.callsignLabel.Bounds = new UniRectangle(new UniScalar(.5f, 0f), new UniScalar(.5f, 0f), 50, 24);
+            this.callsignLabel.Bounds = new UniRectangle(new UniScalar(.7f, 0f), new UniScalar(.2f, 0f), 50, 24);
 
-            this.callsignInput.Bounds = new UniRectangle(new UniScalar(.5f, 80f), new UniScalar(.5f, 0f), 150, 24);
+            this.callsignInput.Bounds = new UniRectangle(new UniScalar(.7f, 80f), new UniScalar(0.2f, 0f), 150, 24);
             this.callsignInput.Enabled = true;
             
             this.tagLabel.Text = "Tag: ";
+            this.tagLabel.Bounds = new UniRectangle(new UniScalar(0.7f, 0f), new UniScalar(0.3f, 0f), 50, 24);
+
+            this.tagInput.Bounds = new UniRectangle(new UniScalar(0.7f, 80f), new UniScalar(0.3f, 0f), 150, 24);
+            this.tagInput.Enabled = true;
+
             this.hostLabel.Text = "Host: ";
+            this.hostLabel.Bounds = new UniRectangle(new UniScalar(0.7f, 0f), new UniScalar(0.4f, 0f), 50, 24);
+
+            this.hostInput.Bounds = new UniRectangle(new UniScalar(0.7f, 80f), new UniScalar(0.4f, 0f), 150, 24);
+            this.hostInput.Enabled = true;
+
             this.teamLabel.Text = "Team: ";
+            this.teamLabel.Bounds = new UniRectangle(new UniScalar(0.7f, 0f), new UniScalar(0.5f, 0f), 50, 24);
+
 
             this.joinButton.Text = "Join!";
-            this.joinButton.Bounds = new UniRectangle(new UniScalar(.75f, 0f), new UniScalar(.75f, 0), 80, 24);
+            this.joinButton.Bounds = new UniRectangle(new UniScalar(.7f, 80f), new UniScalar(0.7f, 0f), 150, 72);
+            // 80, 24 for regular button
 
+            this.backButton.Text = "Back";
+            this.backButton.Bounds = new UniRectangle(new UniScalar(0.2f, 0.0f), new UniScalar(0.9f, 0f), 80, 24);
 
             joinScreen.Desktop.Children.Add(callsignLabel);
-            joinScreen.Desktop.Children.Add(joinButton);
             joinScreen.Desktop.Children.Add(callsignInput);
+            joinScreen.Desktop.Children.Add(tagLabel);
+            joinScreen.Desktop.Children.Add(tagInput);
+            joinScreen.Desktop.Children.Add(hostLabel);
+            joinScreen.Desktop.Children.Add(hostInput);
+            joinScreen.Desktop.Children.Add(teamLabel);
+            joinScreen.Desktop.Children.Add(joinButton);
+            joinScreen.Desktop.Children.Add(backButton);
         }
     }
 }

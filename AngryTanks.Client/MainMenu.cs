@@ -13,6 +13,10 @@ using Microsoft.Xna.Framework.Storage;
 
 using Nuclex.Game.States;
 using Nuclex.UserInterface;
+using Nuclex.UserInterface.Controls;
+using Nuclex.UserInterface.Controls.Desktop;
+using Nuclex.UserInterface.Input;
+using Nuclex.Input;
 
 
 namespace AngryTanks.Client
@@ -22,50 +26,63 @@ namespace AngryTanks.Client
     /// </summary>
     public class MainMenu : GameState
     {
-        private Game game; // needed to load textures
-        private Texture2D bg, join, help, quit; // textures for buttons and background
-        GameStateManager gameStateManager; // stores the gameStateManager used in AngryTanks
+        private Game game; 
+        private Texture2D bg; // textures for buttons and background
+        private GameStateManager gameStateManager;  // stores refernece to the GameStateManager used in AngryTanks
                                             // this allows switching to new gamestates from within a gamestate
-        GuiManager gui;
+        private GuiManager gui; // stores reference to the GuiManager
+        private InputManager input;
         private GraphicsDevice graphicsDevice; // needed for spriteBatch
-        private SpriteBatch spriteBatch; // passing spriteBatch from AngryTanks didn't work
+        private SpriteBatch spriteBatch; // stores reference to SpriteBatch
+        /* not needed 
         private KeyboardState keyboardState, oldKeyboardState;
 
         private enum buttons { join, help, quit } // an enum for each of the button selections
         private int highlightedButton; // to be used as an index for the enum buttons
         private Color[] buttonColor; // using an array instead of List for direct access
+        */
 
         private Screen mainMenuScreen; // screen to be used by the guimanager for this object
+        private ButtonControl joinButton, helpButton, quitButton;
 
-        public MainMenu(Game game, GameStateManager gameStateManager, GuiManager gui)
+        public MainMenu(Game game, GameStateManager gameStateManager, GuiManager gui, InputManager input)
             : base(gameStateManager)
         {
             // load textures
             // this can probably go in OnEntered()
             bg = game.Content.Load<Texture2D>("textures/menu/greentank");
+            /*
             join = game.Content.Load<Texture2D>("textures/menu/join");
             help = game.Content.Load<Texture2D>("textures/menu/help");
             quit = game.Content.Load<Texture2D>("textures/menu/quit");
+             */
 
             // stays in constructor
             this.gameStateManager = gameStateManager;
             this.game = game;
             this.gui = gui;
+            this.input = input;
 
             // the following code can probably go in OnEntered() as well
             graphicsDevice = game.GraphicsDevice;
             spriteBatch = new SpriteBatch(graphicsDevice);
+            
+            /*
             highlightedButton = (int)buttons.join;
 
             buttonColor = new Color[3];
             buttonColor[0] = Color.Yellow;
             buttonColor[1] = Color.White;
             buttonColor[2] = Color.White;
+             */
 
             Viewport viewport = game.GraphicsDevice.Viewport;
             mainMenuScreen = new Screen(viewport.Width, viewport.Height);
 
             gui.Screen = mainMenuScreen;
+            mainMenuScreen.Desktop.Bounds = new UniRectangle(new UniScalar(0.0f, 0.0f), new UniScalar(0.0f, 0.0f),
+                                                        new UniScalar(1.0f, 0.0f), new UniScalar(1.0f, 0.0f));
+            InitializeComponents();
         }
 
         /// <summary>
@@ -74,6 +91,7 @@ namespace AngryTanks.Client
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         public override void Update(GameTime gameTime)
         {
+            /* not needed 
             keyboardState = Keyboard.GetState();
             
             // I'm still not familuar with delagates, so I didn't use them
@@ -93,10 +111,11 @@ namespace AngryTanks.Client
                 // also exits the game
                 if(highlightedButton == (int)buttons.quit)
                     game.Exit();
+             
             }
 
             oldKeyboardState = keyboardState;
-
+            */
             base.Update(gameTime);
         }
 
@@ -112,6 +131,7 @@ namespace AngryTanks.Client
                             1.0f,
                             SpriteEffects.None,
                             1.0f);
+            /*
             spriteBatch.Draw(join,
                             new Vector2(game.Window.ClientBounds.Width * .75f, (game.Window.ClientBounds.Height * .75f) -
                                                                                                     join.Height),
@@ -141,6 +161,7 @@ namespace AngryTanks.Client
                             1.0f,
                             SpriteEffects.None,
                             0.0f);
+             */
             spriteBatch.End();
         }
 
@@ -151,7 +172,7 @@ namespace AngryTanks.Client
         protected override void OnPause() { }
 
         protected override void OnResume() { }
-
+        /* not needed
         // updates members in array with correct tint
         protected void changeHighlightedButton(int direction)
         {
@@ -162,6 +183,26 @@ namespace AngryTanks.Client
                 else if (highlightedButton < (int)buttons.join)
                     highlightedButton = (int)buttons.quit;
             buttonColor[highlightedButton] = Color.Yellow;
+        }
+         */
+        protected void InitializeComponents()
+        {
+            joinButton = new ButtonControl();
+            helpButton = new ButtonControl();
+            quitButton = new ButtonControl();
+
+            joinButton.Text = "Join";
+            joinButton.Bounds = new UniRectangle(new UniScalar(0.5f, 0.0f), new UniScalar(0.3f, 0.0f), 240, 48);
+
+            helpButton.Text = "Help/Credits";
+            helpButton.Bounds = new UniRectangle(new UniScalar(0.5f, 0.0f), new UniScalar(0.5f, 0.0f), 240, 48);
+
+            quitButton.Text = "Quit";
+            quitButton.Bounds = new UniRectangle(new UniScalar(0.5f, 0.0f), new UniScalar(0.7f, 0.0f), 240, 48);
+
+            mainMenuScreen.Desktop.Children.Add(joinButton);
+            mainMenuScreen.Desktop.Children.Add(helpButton);
+            mainMenuScreen.Desktop.Children.Add(quitButton);
         }
     }
 }

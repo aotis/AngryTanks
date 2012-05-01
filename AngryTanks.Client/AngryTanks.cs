@@ -123,7 +123,7 @@ namespace AngryTanks.Client
             gui.Screen = defaultScreen;
 
             gameStateManager = new GameStateManager(new GameServiceContainer());
-            gameStateManager.Push(new MainMenu(this, gameStateManager, gui));
+            gameStateManager.Push(new MainMenu(this, gameStateManager, gui, Input));
 
             base.Initialize();
         }
@@ -188,7 +188,7 @@ namespace AngryTanks.Client
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.Black);
+            GraphicsDevice.Clear(Color.LightGreen);
 
             gameStateManager.Draw(gameTime);
 
