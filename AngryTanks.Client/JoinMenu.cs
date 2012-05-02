@@ -29,21 +29,22 @@ namespace AngryTanks.Client
     public class JoinMenu : GameState
     {
         private Game game; // needed to load textures
-        GameStateManager gameStateManager;  // stores the gameStateManager used in AngryTanks
+        private GameStateManager gameStateManager;  // stores the gameStateManager used in AngryTanks
                                             // this allows switching to new gamestates from within a gamestate
-        GuiManager gui;
-        InputManager input;
-        GameServiceContainer gameService;
-        Texture2D bg;
+        private GuiManager gui;
+        private InputManager input;
+        private GameServiceContainer gameService;
+        private Texture2D bg;
 
         private SpriteBatch spriteBatch; // passing spriteBatch from AngryTanks didn't work
-        KeyboardState keyboardState, oldKeyboardState;
+        
         
         private Screen joinScreen;
         private LabelControl callsignLabel, tagLabel, hostLabel, teamLabel;
         private ButtonControl joinButton, backButton;
         private InputControl callsignInput, tagInput, hostInput;
-        private ChoiceControl teamChoice;
+        private Control teamChoice;
+        private ChoiceControl redTeam, blueTeam, greenTeam;
 
 
         public JoinMenu(Game game, GameStateManager gameStateManager, GuiManager gui, InputManager input)
@@ -65,7 +66,11 @@ namespace AngryTanks.Client
             joinScreen.Desktop.Bounds = new UniRectangle(new UniScalar(0.0f, 0.0f), new UniScalar(0.0f, 0.0f),
                                                         new UniScalar(1.0f, 0.0f), new UniScalar(1.0f, 0.0f));
             InitializeComponents();
+
+            joinButton.Pressed += new EventHandler(joinButton_Pressed);
+            backButton.Pressed += new EventHandler(backButton_Pressed);
         }
+
         public override void Initialize()
         {
             
@@ -79,14 +84,7 @@ namespace AngryTanks.Client
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         public override void Update(GameTime gameTime)
         {
-            keyboardState = Keyboard.GetState();
-            if (keyboardState.IsKeyUp(Keys.Escape) && oldKeyboardState.IsKeyDown(Keys.Escape))
-                gameStateManager.Switch(new MainMenu(game, gameStateManager, gui, input));
-
-           
-
-            oldKeyboardState = keyboardState;
-
+            
             base.Update(gameTime);
         }
 
@@ -130,7 +128,11 @@ namespace AngryTanks.Client
 
             this.joinButton = new ButtonControl();
             this.backButton = new ButtonControl();
-            this.teamChoice = new ChoiceControl();
+            this.teamChoice = new Control();
+
+            this.redTeam = new ChoiceControl();
+            this.blueTeam = new ChoiceControl();
+            this.greenTeam = new ChoiceControl();
 
             this.callsignLabel.Text = "Callsign: ";
             this.callsignLabel.Bounds = new UniRectangle(new UniScalar(.7f, 0f), new UniScalar(.2f, 0f), 50, 24);
@@ -153,13 +155,26 @@ namespace AngryTanks.Client
             this.teamLabel.Text = "Team: ";
             this.teamLabel.Bounds = new UniRectangle(new UniScalar(0.7f, 0f), new UniScalar(0.5f, 0f), 50, 24);
 
+            this.teamChoice.Bounds = new UniRectangle(new UniScalar(0.7f, 0f), new UniScalar(0.5f, 0f), 150, 94);
+
+            this.redTeam.Text = "Red Team";
+            this.redTeam.Bounds = new UniRectangle(new UniScalar(0.0f, 80f), new UniScalar(0.0f, 10f), 10, 10);
+            this.redTeam.Enabled = true;
+
+            this.blueTeam.Text = "Blue Team";
+            this.blueTeam.Bounds = new UniRectangle(new UniScalar(0.0f, 80f), new UniScalar(0.0f, 30f), 10, 10);
+            this.blueTeam.Enabled = true;
+
+            this.greenTeam.Text = "Green Team";
+            this.greenTeam.Bounds = new UniRectangle(new UniScalar(0.0f, 80f), new UniScalar(0.0f, 50f), 10, 10);
+            this.greenTeam.Enabled = true;
 
             this.joinButton.Text = "Join!";
             this.joinButton.Bounds = new UniRectangle(new UniScalar(.7f, 80f), new UniScalar(0.7f, 0f), 150, 72);
             // 80, 24 for regular button
 
             this.backButton.Text = "Back";
-            this.backButton.Bounds = new UniRectangle(new UniScalar(0.2f, 0.0f), new UniScalar(0.9f, 0f), 80, 24);
+            this.backButton.Bounds = new UniRectangle(new UniScalar(0.1f, 0.0f), new UniScalar(0.9f, 0f), 80, 24);
 
             joinScreen.Desktop.Children.Add(callsignLabel);
             joinScreen.Desktop.Children.Add(callsignInput);
@@ -168,8 +183,24 @@ namespace AngryTanks.Client
             joinScreen.Desktop.Children.Add(hostLabel);
             joinScreen.Desktop.Children.Add(hostInput);
             joinScreen.Desktop.Children.Add(teamLabel);
+            joinScreen.Desktop.Children.Add(teamChoice);
             joinScreen.Desktop.Children.Add(joinButton);
             joinScreen.Desktop.Children.Add(backButton);
+
+            teamChoice.Children.Add(redTeam);
+            teamChoice.Children.Add(blueTeam);
+            teamChoice.Children.Add(greenTeam);
+        }
+
+        void backButton_Pressed(object sender, EventArgs e)
+        {
+            gameStateManager.Switch(new MainMenu(game, gameStateManager, gui, input));
+        }
+
+        void joinButton_Pressed(object sender, EventArgs e)
+        {
+            // not yet implemented
+            return;
         }
     }
 }
